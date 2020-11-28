@@ -1,25 +1,31 @@
-declare module 'ember-cli/lib/broccoli/ember-app' {
-  import CoreObject from 'core-object';
+declare module "ember-cli/lib/broccoli/ember-app" {
+  import CoreObject from "core-object";
+
+  export interface Registry {
+    add(type: string, plugin: any): void;
+  }
 
   export default class EmberApp extends CoreObject {
     options: Record<string, unknown>;
+    registry: Registry;
   }
 }
 
-declare module 'ember-cli/lib/models/addon' {
-  import CoreObject, { ExtendOptions } from 'core-object';
-  import UI from 'console-ui';
-  import { Application } from 'express';
-  import Project from 'ember-cli/lib/models/project';
-  import { TaskOptions } from 'ember-cli/lib/models/task';
-  import Command from 'ember-cli/lib/models/command';
-  import EmberApp from 'ember-cli/lib/broccoli/ember-app';
-  import PreprocessRegistry from 'ember-cli-preprocess-registry';
+declare module "ember-cli/lib/models/addon" {
+  import CoreObject, { ExtendOptions } from "core-object";
+  import UI from "console-ui";
+  import { Application } from "express";
+  import Project from "ember-cli/lib/models/project";
+  import { TaskOptions } from "ember-cli/lib/models/task";
+  import Command from "ember-cli/lib/models/command";
+  import EmberApp, { Registry } from "ember-cli/lib/broccoli/ember-app";
+  import PreprocessRegistry from "ember-cli-preprocess-registry";
 
   export default class Addon extends CoreObject {
     name: string;
     root: string;
     app?: EmberApp;
+    _findHost?: () => EmberApp | undefined;
     parent: Addon | Project;
     project: Project;
     addons: Addon[];
@@ -34,32 +40,41 @@ declare module 'ember-cli/lib/models/addon' {
 
     blueprintsPath(): string;
     included(includer: EmberApp | Project): void;
-    includedCommands(): Record<string, typeof Command | ExtendOptions<Command>> | void;
+    includedCommands(): Record<
+      string,
+      typeof Command | ExtendOptions<Command>
+    > | void;
     shouldIncludeChildAddon(addon: Addon): boolean;
     isDevelopingAddon(): boolean;
-    serverMiddleware(options: { app: Application; options?: TaskOptions }): void | Promise<void>;
+    serverMiddleware(options: {
+      app: Application;
+      options?: TaskOptions;
+    }): void | Promise<void>;
     testemMiddleware(app: Application, options?: TaskOptions): void;
-    setupPreprocessorRegistry(type: 'self' | 'parent', registry: PreprocessRegistry): void;
+    setupPreprocessorRegistry(
+      type: "self" | "parent",
+      registry: PreprocessRegistry
+    ): void;
   }
 }
 
-declare module 'ember-cli/lib/models/blueprint' {
+declare module "ember-cli/lib/models/blueprint" {
   class Blueprint {
     taskFor(taskName: string): void;
   }
   export = Blueprint;
 }
 
-declare module 'ember-cli/lib/models/task' {
+declare module "ember-cli/lib/models/task" {
   export interface TaskOptions {
     path?: string;
   }
 }
 
-declare module 'ember-cli/lib/models/command' {
-  import CoreObject from 'core-object';
-  import UI from 'console-ui';
-  import Project from 'ember-cli/lib/models/project';
+declare module "ember-cli/lib/models/command" {
+  import CoreObject from "core-object";
+  import UI from "console-ui";
+  import Project from "ember-cli/lib/models/project";
 
   interface CommandOption {
     name: string;
@@ -72,7 +87,7 @@ declare module 'ember-cli/lib/models/command' {
 
   export default class Command extends CoreObject {
     name: string;
-    works: 'insideProject' | 'outsideProject' | 'everywhere';
+    works: "insideProject" | "outsideProject" | "everywhere";
     description: string;
     availableOptions: CommandOption[];
     anonymousOptions: string[];
@@ -84,15 +99,19 @@ declare module 'ember-cli/lib/models/command' {
   }
 }
 
-declare module 'ember-cli/lib/models/project' {
-  import CoreObject from 'core-object';
-  import UI from 'console-ui';
-  import Addon from 'ember-cli/lib/models/addon';
+declare module "ember-cli/lib/models/project" {
+  import CoreObject from "core-object";
+  import UI from "console-ui";
+  import Addon from "ember-cli/lib/models/addon";
+  import { Registry } from "ember-cli/lib/broccoli/ember-app";
 
   export default class Project extends CoreObject {
+    config(env: string | undefined): any;
+    registry: Registry;
     ui: UI;
     root: string;
     addons: Addon[];
+    options: any;
     pkg: {
       name: string;
       version: string;
