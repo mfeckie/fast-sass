@@ -1,8 +1,22 @@
 import { addon } from "./lib/utilities/ember-cli-entities";
 import path from "path";
 import Funnel from "broccoli-funnel";
-import SassCompiler from "./sass-compiler";
+import SassCompiler, { SassOptions } from "./sass-compiler";
 import mergeTrees from "broccoli-merge-trees";
+
+interface AddonOptions {
+  onlyIncluded?: boolean;
+  includePaths?: string[];
+  ext?: string;
+  outputPaths: Record<string, string>;
+  outputFile: string;
+  sourceMap: boolean;
+  sourceMapContents: boolean;
+  sourceMapRoot: string;
+  minifyCSS: any;
+}
+
+type CombinedOptions = AddonOptions & SassOptions;
 
 class SASSPlugin {
   name: string;
@@ -20,9 +34,14 @@ SASSPlugin.prototype.toTree = function (
   tree: any,
   inputPath: string,
   _outputPath: string,
-  inputOptions: any
+  inputOptions: AddonOptions
 ) {
-  var options = Object.assign({}, this.optionsFn(), inputOptions);
+  var options: CombinedOptions = Object.assign(
+    {},
+    this.optionsFn(),
+    inputOptions
+  );
+
   var inputTrees: Funnel[];
 
   if (options.onlyIncluded) {
@@ -44,21 +63,16 @@ SASSPlugin.prototype.toTree = function (
     inputTrees = inputTrees.concat(options.includePaths);
   }
 
-  options.implementation = require("sass");
+  const ext = options.ext || "scss";
 
-  var ext = options.extension || "scss";
   var paths = options.outputPaths;
   var trees: Array<SassCompiler | Funnel> = Object.keys(paths).map(function (
     file
   ) {
-    var input = path.join(inputPath, file + "." + ext);
+    var input = path.join(inputPath, `${file}.${ext}`);
     var output = paths[file];
     return new SassCompiler(inputTrees, input, output, options);
   });
-
-  if (options.passthrough) {
-    trees.push(new Funnel(tree, options.passthrough));
-  }
 
   return mergeTrees(trees);
 };
