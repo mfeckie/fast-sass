@@ -1,38 +1,75 @@
-fast-sass
-==============================================================================
+# fast-sass
 
-[Short description of the addon.]
+A SASS compiler plugin focussed on speed over customisability. Initially forked from [ember-cli-sass](https://github.com/adopted-ember-addons/ember-cli-sass) then rewritten taking much inspiration from [ember-cli-typescript](https://github.com/typed-ember/ember-cli-typescript/) to allow the addon to be written in TypeScript
 
+fast-sass uses [Sass][] to preprocess your ember-cli app's styles, and provides support for source maps and include paths. It provides support for the common use case for Ember.js projects:
 
-Compatibility
-------------------------------------------------------------------------------
+[Sass]: https://sass-lang.com/
 
-* Ember.js v3.16 or above
-* Ember CLI v2.13 or above
-* Node.js v10 or above
-
-
-Installation
-------------------------------------------------------------------------------
+## Installation
 
 ```
 ember install fast-sass
 ```
 
+Next you'll need to rename `styles/app.css` to `styles/app.scss`.
 
-Usage
-------------------------------------------------------------------------------
+### Usage
 
-[Longer description of how to use the addon in apps.]
+This addon uses a distribution of [Dart Sass][] that is compiled to pure JavaScript. Dart Sass is the reference implementation for Sass.
 
+[Dart Sass]: https://sass-lang.com/dart-sass
 
-Contributing
-------------------------------------------------------------------------------
+By default this addon will compile `app/styles/app.scss` into `dist/assets/app.css`.
 
-See the [Contributing](CONTRIBUTING.md) guide for details.
+If you want more control, you can pass additional options to `sassOptions`:
 
+- `includePaths`: an array of include paths
+- `onlyIncluded`: true/false whether to use only what is in `app/styles` and `includePaths`. This may helps with performance, particularly when using NPM linked modules
+- `ext`: The file extension of the input file, default: `'scss'`
 
-License
-------------------------------------------------------------------------------
+### Processing multiple files
 
-This project is licensed under the [MIT License](LICENSE.md).
+If you need to process multiple files, it can be done by [configuring the output paths](http://ember-cli.com/user-guide/#configuring-output-paths) in your `ember-cli-build.js`:
+
+```js
+var app = new EmberApp({
+  outputPaths: {
+    app: {
+      css: {
+        'app': '/assets/application-name.css',
+        'themes/alpha': '/assets/themes/alpha.css'
+      }
+    }
+  }
+});
+```
+
+## Example
+
+The following example assumes your bower packages are installed into `bower_components/`.
+
+Install some SASS:
+
+```shell
+yarn add -D foundation-sites
+```
+
+Specify some include paths in your `ember-cli-build.js`:
+
+```javascript
+var app = new EmberApp({
+  sassOptions: {
+    includePaths: [
+      'node_modules/foundation-sites/scss',
+    ]
+  }
+});
+```
+
+Import some deps into your app.scss:
+
+```scss
+@import 'foundation';
+@include foundation-global-styles;
+```
