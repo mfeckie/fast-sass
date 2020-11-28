@@ -21,6 +21,12 @@ module.exports = {
   env: {
     browser: true
   },
+    settings: {
+    node: {
+      // Honor both extensions when enforcing e.g. `node/no-missing-require`
+      tryExtensions: ['.js', '.ts'],
+    },
+  },
   rules: {},
   overrides: [
     // node files
