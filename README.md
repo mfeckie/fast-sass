@@ -47,9 +47,9 @@ var app = new EmberApp({
 
 ## Example
 
-The following example assumes your bower packages are installed into `bower_components/`.
+The following example assumes your this party packages are installed as `node_modules`.
 
-Install some SASS:
+Make the files from that dependence available to SASS like this:
 
 ```shell
 yarn add -D foundation-sites
