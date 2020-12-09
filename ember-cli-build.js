@@ -15,7 +15,8 @@ module.exports = function (defaults) {
     sassOptions: {
       includePaths: [
         'node_modules/foundation-sites/scss',
-      ]
+      ],
+      autoIncludeComponentCSS: true
     }
   });
 
