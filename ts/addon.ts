@@ -3,7 +3,8 @@ import path from "path";
 import Funnel from "broccoli-funnel";
 import SassCompiler, { SassOptions } from "./sass-compiler";
 import mergeTrees from "broccoli-merge-trees";
-
+import { glob } from "glob";
+import writeFile from "broccoli-file-creator";
 interface AddonOptions {
   onlyIncluded?: boolean;
   includePaths?: string[];
@@ -14,6 +15,8 @@ interface AddonOptions {
   sourceMapContents: boolean;
   sourceMapRoot: string;
   minifyCSS: any;
+  registry: any;
+  autoIncludeComponentCSS: boolean;
 }
 
 type CombinedOptions = AddonOptions & SassOptions;
@@ -42,6 +45,22 @@ SASSPlugin.prototype.toTree = function (
     inputOptions
   );
 
+  if (options.autoIncludeComponentCSS) {
+    const componentSCSSFiles = glob.sync(
+      path.join(
+        inputOptions.registry.app.project.root,
+        "/app/components/**/*.scss"
+      )
+    );
+
+    const result = componentSCSSFiles
+      .map((filename) => `@import '${filename}';`)
+      .join("\n");
+
+    const importTree = writeFile("/app/styles/_pod-styles.scss", result);
+    tree = mergeTrees([tree, importTree]);
+  }
+
   var inputTrees: Funnel[];
 
   if (options.onlyIncluded) {
@@ -66,6 +85,7 @@ SASSPlugin.prototype.toTree = function (
   const ext = options.ext || "scss";
 
   var paths = options.outputPaths;
+
   var trees: Array<SassCompiler | Funnel> = Object.keys(paths).map(function (
     file
   ) {
