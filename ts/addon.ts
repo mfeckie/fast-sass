@@ -17,6 +17,7 @@ interface AddonOptions {
   minifyCSS: any;
   registry: any;
   autoIncludeComponentCSS: boolean;
+  appRoot: string;
 }
 
 type CombinedOptions = AddonOptions & SassOptions;
@@ -47,10 +48,7 @@ SASSPlugin.prototype.toTree = function (
 
   if (options.autoIncludeComponentCSS) {
     const componentSCSSFiles = glob.sync(
-      path.join(
-        inputOptions.registry.app.project.root,
-        "/app/components/**/*.scss"
-      )
+      path.join(options.appRoot, "/components/**/*.scss")
     );
 
     const result = componentSCSSFiles
@@ -58,6 +56,7 @@ SASSPlugin.prototype.toTree = function (
       .join("\n");
 
     const importTree = writeFile("/app/styles/_pod-styles.scss", result);
+
     tree = mergeTrees([tree, importTree]);
   }
 
@@ -126,6 +125,7 @@ export default addon({
     }
     options.outputFile = options.outputFile || this.project.name() + ".css";
     options.sourceMapRoot = path.join(this.project.root, "app/styles");
+    options.appRoot = this.app?.trees?.app;
 
     return options;
   },
