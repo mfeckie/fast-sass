@@ -73,3 +73,23 @@ Import some deps into your app.scss:
 @import 'foundation';
 @include foundation-global-styles;
 ```
+
+## Automatic Pod Style Inclusions
+
+If you want to follow a pattern of having style files for each individual component, you can have them automatically included by passing this option in `ember-cli-build.js`.
+
+```ts
+var app = new EmberApp({
+  sassOptions: {
+    autoIncludeComponentCSS: true
+  }
+});
+```
+
+You *must* also add this to your `app.scss`
+
+```scss
+@import 'pod-styles';
+```
+
+With this done, any `scss` file found in `app/components/**` will be automatically included in the build output.
