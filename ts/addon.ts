@@ -125,7 +125,12 @@ export default addon({
     }
     options.outputFile = options.outputFile || this.project.name() + ".css";
     options.sourceMapRoot = path.join(this.project.root, "app/styles");
-    options.appRoot = this.app?.trees?.app;
+
+    if (typeof this.app?.trees?.app == "string") {
+      options.appRoot = this.app.trees.app;
+    } else {
+      options.appRoot = this.app?.trees?.app?._directoryPath;
+    }
 
     return options;
   },

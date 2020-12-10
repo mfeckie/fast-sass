@@ -24,7 +24,7 @@ declare module "ember-cli/lib/models/addon" {
   export default class Addon extends CoreObject {
     name: string;
     root: string;
-    app?: EmberApp & { trees?: Record<string, string> };
+    app?: EmberApp & { trees?: Record<string, any> };
     _findHost?: () => EmberApp | undefined;
     parent: Addon | Project;
     project: Project;
