@@ -40,11 +40,4 @@ module("Acceptance | css present", function (hooks) {
 
     assert.ok(hasRule(dummyStyles, ".GlobalAppCSS"));
   });
-
-  test("OutputPath CSS present", async function (assert) {
-    await visit("/");
-    const dummyStyles = getStyleSheet("output-path.css");
-
-    assert.ok(hasRule(dummyStyles, ".OutputPathCSS"));
-  });
 });

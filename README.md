@@ -28,22 +28,6 @@ If you want more control, you can pass additional options to `sassOptions`:
 - `onlyIncluded`: true/false whether to use only what is in `app/styles` and `includePaths`. This may helps with performance, particularly when using NPM linked modules
 - `ext`: The file extension of the input file, default: `'scss'`
 
-### Processing multiple files
-
-If you need to process multiple files, it can be done by [configuring the output paths](http://ember-cli.com/user-guide/#configuring-output-paths) in your `ember-cli-build.js`:
-
-```js
-var app = new EmberApp({
-  outputPaths: {
-    app: {
-      css: {
-        'app': '/assets/application-name.css',
-        'themes/alpha': '/assets/themes/alpha.css'
-      }
-    }
-  }
-});
-```
 
 ## Example
 
