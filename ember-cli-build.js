@@ -4,14 +4,6 @@ const EmberAddon = require("ember-cli/lib/broccoli/ember-addon");
 
 module.exports = function (defaults) {
   let app = new EmberAddon(defaults, {
-    outputPaths: {
-      app: {
-        css: {
-          app: "/assets/dummy.css",
-          additional: "/assets/additional.css",
-        },
-      },
-    },
     sassOptions: {
       includePaths: ["node_modules/foundation-sites/scss"],
       autoIncludeComponentCSS: true,
