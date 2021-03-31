@@ -8,7 +8,7 @@ module.exports = function (defaults) {
       app: {
         css: {
           app: "/assets/dummy.css",
-          "output-path": "/assets/output-path.css",
+          additional: "/assets/additional.css",
         },
       },
     },
