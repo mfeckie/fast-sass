@@ -11,3 +11,7 @@
 - **Breaking**
 - Explicit support for multiple output files has been removed because of problems with Embroider.  It may keep working, but I'm no longer actively trying to support it.
 
+
+# 1.1.0
+
+ - [@andybluntish](https://github.com/mfeckie/fast-sass/pull/3) - Bump SASS version
